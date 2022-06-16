@@ -10,14 +10,12 @@ export class Godslug extends PIXI.Sprite {
         this.buttonMode = true;
         
         this.on('pointerdown', () => this.stinkyClicked())        
-
+        
         this.x = 1600;
         this.y = 249;
-
+        
        this.scale.set(0.3, 0.3)
     }
-
-
 
     public stinkyClicked() {
         console.log("you smell like you farded")
@@ -26,12 +24,7 @@ export class Godslug extends PIXI.Sprite {
     }
 
     stinkyTalking() {
-    
     }
-
-
-
-
 
     update(delta:number) {
         if(this.talking == true) {
