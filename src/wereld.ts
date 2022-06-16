@@ -6,7 +6,7 @@ export class Foreground extends PIXI.Sprite {
     constructor(texture: PIXI.Texture) {
         super(texture)
 
-        this.width = 2400;
+        this.width = 18000;
         this.height = 450;
 
         this.x = 0

@@ -16,19 +16,19 @@ import { Foreground } from "./wereld"
 import { Godslug } from './DrSchtank'
 
 
-export class game {
+export class Game {
     //hier import hij de classes
-    private bubble: Bubble;
-    private bubbles: Bubble[];
-    private player: Player;
+    public bubble: Bubble;
+    public bubbles: Bubble[];
+    public player: Player;
     public slug: Godslug;
 
-    private foreground: Foreground;
-    private background: PIXI.TilingSprite
+    public foreground: Foreground;
+    public background: PIXI.TilingSprite
 
-    private pixi: PIXI.Application
-    private loader: PIXI.Loader
-    private mylistener: EventListener
+    public pixi: PIXI.Application
+    public loader: PIXI.Loader
+    public mylistener: EventListener
 
 
 
@@ -39,7 +39,7 @@ export class game {
         window.addEventListener('click', this.mylistener)
 
         //het gameveld wordt aangemaakt
-        this.pixi = new PIXI.Application({ width: screen.width - 40, height: screen.height - 500 })
+        this.pixi = new PIXI.Application({width: 18000, height: 600 })
         document.body.appendChild(this.pixi.view)
 
         //laad de images alvast
@@ -69,7 +69,7 @@ export class game {
         this.pixi.stage.addChild(this.background)
     
         //hier maakt hij alle sprites aan
-        this.player = new Player(this.loader.resources["playerTexture"].texture!)
+        this.player = new Player(this.loader.resources["playerTexture"].texture!, this)
         this.pixi.stage.addChild(this.player)
 
         this.bubble = new Bubble(this.loader.resources["bubbleTexture"].texture!)
@@ -120,4 +120,4 @@ export class game {
     }
 }
 
-new game()
+new Game()

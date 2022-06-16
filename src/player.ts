@@ -1,12 +1,15 @@
 import * as PIXI from "pixi.js"
+import { Game } from "./game";
 
 export class Player extends PIXI.Sprite {
-    speedx = 0;
-    speedy = 0;
+    game: Game
 
-    constructor(texture: PIXI.Texture) {
+    xspeed = 0;
+    yspeed = 0;
+
+    constructor(texture: PIXI.Texture, game: Game) {
         super(texture)
-
+        this.game = game
         window.addEventListener("keydown", (e: KeyboardEvent) => this.onKeyDown(e))
         window.addEventListener("keyup", (e: KeyboardEvent) => this.onKeyUp(e))
 
@@ -24,39 +27,51 @@ export class Player extends PIXI.Sprite {
     }
 
     update(delta: number) {
-        this.x += this.speedx
-        this.y += this.speedy    
+        this.x += this.xspeed
+        this.y += this.yspeed
 
-        if (this.x > 2000) {
-            this.x = -100;
-        } else if (this.x < -100) {
-            this.x = 2000
-        } else if (this.y < -20) {
-            this.x = -100;
-            this.y =  150;
-        }
+        let mapwidth = 18000
+        let mapheight = 600
+        let centerx = 500
+        let centery = 600
+
+
+        this.x = this.clamp(this.x + this.xspeed, 0, mapwidth)
+        this.y = this.clamp(this.y + this.yspeed, 0, mapheight)
+
+        // centreer het hele level onder het karakter, gebruik clamp om bij de randen niet te scrollen
+        let mapx = this.clamp(this.x, centerx, mapwidth - 9000)
+        let mapy = this.clamp(this.y, centery, mapheight - centery)
+
+        this.game.pixi.stage.pivot.set(mapx - 500, mapy)
     }
+
+    clamp(num: number, min: number, max: number) {
+        return Math.min(Math.max(num, min), max)
+    }
+
 
     onKeyDown(e: KeyboardEvent): void {
         switch (e.key.toUpperCase()) {
             case "A":
             case "ARROWLEFT":
-                this.speedx = -3
+                this.xspeed = -3
                 break
             case "D":
             case "ARROWRIGHT":
-                this.speedx = 3
+                this.xspeed = 3
                 break
             case "W":
             case "ARROWUP":
-                this.speedy = -3
+                this.yspeed = -3
                 break
             case "S":
             case "ARROWDOWN":
-                this.speedy = 3
+                this.yspeed = 3
                 break
         }
     }
+
 
     onKeyUp(e: KeyboardEvent): void {
         switch (e.key.toUpperCase()) {
@@ -64,13 +79,13 @@ export class Player extends PIXI.Sprite {
             case "ARROWLEFT":
             case "D":
             case "ARROWRIGHT":
-                this.speedx = 0
+                this.xspeed = 0
                 break;
             case "W":
             case "ARROWUP":
             case "S":
             case "ARROWDOWN":
-                this.speedy = 0
+                this.yspeed = 0
                 break
         }
     }

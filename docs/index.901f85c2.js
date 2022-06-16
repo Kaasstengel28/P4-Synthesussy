@@ -516,7 +516,7 @@ function hmrAcceptRun(bundle, id) {
 },{}],"edeGs":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "game", ()=>game
+parcelHelpers.export(exports, "Game", ()=>Game
 );
 var _pixiJs = require("pixi.js");
 //fotos importeren
@@ -536,7 +536,7 @@ var _particles = require("./particles");
 var _player = require("./player");
 var _wereld = require("./wereld");
 var _drSchtank = require("./DrSchtank");
-class game {
+class Game {
     constructor(){
         this.bubbles = [];
         this.mylistener = (e)=>this.logMessage(e)
@@ -544,8 +544,8 @@ class game {
         window.addEventListener('click', this.mylistener);
         //het gameveld wordt aangemaakt
         this.pixi = new _pixiJs.Application({
-            width: screen.width - 40,
-            height: screen.height - 500
+            width: 18000,
+            height: 600
         });
         document.body.appendChild(this.pixi.view);
         //laad de images alvast
@@ -566,7 +566,7 @@ class game {
         this.background = new _pixiJs.TilingSprite(this.loader.resources["waterTexture"].texture, this.pixi.view.width, this.pixi.view.height);
         this.pixi.stage.addChild(this.background);
         //hier maakt hij alle sprites aan
-        this.player = new _player.Player(this.loader.resources["playerTexture"].texture);
+        this.player = new _player.Player(this.loader.resources["playerTexture"].texture, this);
         this.pixi.stage.addChild(this.player);
         this.bubble = new _particles.Bubble(this.loader.resources["bubbleTexture"].texture);
         this.pixi.stage.addChild(this.bubble);
@@ -601,7 +601,7 @@ class game {
         return bounds1.x < bounds2.x + bounds2.width && bounds1.x + bounds1.width > bounds2.x && bounds1.y < bounds2.y + bounds2.height && bounds1.y + bounds1.height > bounds2.y;
     }
 }
-new game();
+new Game();
 
 },{"pixi.js":"dsYej","./images/sakura.png":"8JSvj","./images/background.png":"fwQMR","./images/bones.png":"dLwEI","./images/foreground.png":"6TC8P","./images/godslug.png":"53l6e","./images/idle.png":"c34iw","./particles":"kkmLE","./player":"6OTSH","./wereld":"5XBc0","./DrSchtank":"fbLgW","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dsYej":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -37190,10 +37190,11 @@ parcelHelpers.export(exports, "Player", ()=>Player
 );
 var _pixiJs = require("pixi.js");
 class Player extends _pixiJs.Sprite {
-    speedx = 0;
-    speedy = 0;
-    constructor(texture){
+    xspeed = 0;
+    yspeed = 0;
+    constructor(texture, game){
         super(texture);
+        this.game = game;
         window.addEventListener("keydown", (e)=>this.onKeyDown(e)
         );
         window.addEventListener("keyup", (e)=>this.onKeyUp(e)
@@ -37209,32 +37210,39 @@ class Player extends _pixiJs.Sprite {
     // this.addChild(greenbox)
     }
     update(delta) {
-        this.x += this.speedx;
-        this.y += this.speedy;
-        if (this.x > 2000) this.x = -100;
-        else if (this.x < -100) this.x = 2000;
-        else if (this.y < -20) {
-            this.x = -100;
-            this.y = 150;
-        }
+        this.x += this.xspeed;
+        this.y += this.yspeed;
+        let mapwidth = 18000;
+        let mapheight = 600;
+        let centerx = 500;
+        let centery = 600;
+        this.x = this.clamp(this.x + this.xspeed, 0, mapwidth);
+        this.y = this.clamp(this.y + this.yspeed, 0, mapheight);
+        // centreer het hele level onder het karakter, gebruik clamp om bij de randen niet te scrollen
+        let mapx = this.clamp(this.x, centerx, mapwidth - 9000);
+        let mapy = this.clamp(this.y, centery, mapheight - centery);
+        this.game.pixi.stage.pivot.set(mapx - 500, mapy);
+    }
+    clamp(num, min, max) {
+        return Math.min(Math.max(num, min), max);
     }
     onKeyDown(e) {
         switch(e.key.toUpperCase()){
             case "A":
             case "ARROWLEFT":
-                this.speedx = -3;
+                this.xspeed = -3;
                 break;
             case "D":
             case "ARROWRIGHT":
-                this.speedx = 3;
+                this.xspeed = 3;
                 break;
             case "W":
             case "ARROWUP":
-                this.speedy = -3;
+                this.yspeed = -3;
                 break;
             case "S":
             case "ARROWDOWN":
-                this.speedy = 3;
+                this.yspeed = 3;
                 break;
         }
     }
@@ -37244,13 +37252,13 @@ class Player extends _pixiJs.Sprite {
             case "ARROWLEFT":
             case "D":
             case "ARROWRIGHT":
-                this.speedx = 0;
+                this.xspeed = 0;
                 break;
             case "W":
             case "ARROWUP":
             case "S":
             case "ARROWDOWN":
-                this.speedy = 0;
+                this.yspeed = 0;
                 break;
         }
     }
@@ -37265,7 +37273,7 @@ var _pixiJs = require("pixi.js");
 class Foreground extends _pixiJs.Sprite {
     constructor(texture){
         super(texture);
-        this.width = 2400;
+        this.width = 18000;
         this.height = 450;
         this.x = 0;
         this.y = 450;
