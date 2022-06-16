@@ -1,5 +1,7 @@
 # PixiJS Startproject
 
+https://kaasstengel28.github.io/P4-Synthesussy/
+
 Dit is een startproject voor het werken met ***PixiJS en Typescript***. Installeer eerst [NodeJS](https://nodejs.org/en/) en [Visual Studio Code](https://code.visualstudio.com)
 
 [📺 Bekijk daarna dit filmpje voor het opzetten van dit voorbeeldproject op je eigen computer](https://youtu.be/uuPprdiFKXI)
